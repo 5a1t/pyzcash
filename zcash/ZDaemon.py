@@ -1,15 +1,8 @@
 import requests
 import json
 
-#Address and port of your zcashd instance
-ZURL = "http://localhost:18232"
-#Timeout needs to be high for any pour operations
-TIMEOUT = 600
-#user/pass from zcash conf.
-RPCUSER = "username"
-RPCPASSWORD = "password"
-#Default fee to use on network for txs.
-DEFAULT_FEE = 0.01
+
+from  settings import *
 
 
 #https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list
