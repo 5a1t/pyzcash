@@ -1,13 +1,17 @@
 import requests
 import json
 
+#Address and port of your zcashd instance
 ZURL = "http://localhost:18232"
+#Timeout needs to be high for any pour operations
 TIMEOUT = 600
+#user/pass from zcash conf.
 RPCUSER = "username"
 RPCPASSWORD = "password"
+#Default fee to use on network for txs.
 DEFAULT_FEE = 0.01
 
-#for tests
+#for tests (sample data here - replace with your own)
 TEST_TXID = '229b48e82366c52e977b51c664691d0b0e5870240c0b80a50f80c0e18287b78d'
 TEST_ZADDR = "tnML9eWAXPpun55Wx6NkJugpKxEResbYwk1vuqeB8V3wezNZJqq8RrdE6P4QWiH35Bto14cKvo4GTTTqS5eNveEAFVgVCBs"
 TEST_TADDR = "mfhVDFEcYzGBnoGETV7xy4WAmCBji6KfhF"
@@ -28,11 +32,6 @@ class ZDaemon(object):
 		
 	def _call(self,  method, *args):
 
-	#	print {	'version': '2', 
-	#			'method': method,
-	#			'params': args, 
-	#			'id': self.id_count}
-
 		
 		jsondata = json.dumps({	'version': '2', 
 				'method': method,
@@ -46,7 +45,7 @@ class ZDaemon(object):
 
 		resp = json.loads(r.text)
 
-		#throw later if fails.
+		#TODO: deal with errors better.
 		error = resp['error']
 		if error:
 			print error
@@ -226,13 +225,10 @@ def test_daemon():
 	print pourtx
 	print hextx	
 
-	#print zd.receiveTx(TEST_ZSECRET, encnote)
-	#print zd.receiveTx(TEST_ZSECRET, encnote1)
-	faucet_addr = 'mt35ftTYrriCmTN18EcG8y7oyM1j7ardXw'	
-
 #	print zd.sendNoteToAddress(encnote, TEST_ZSECRET, TEST_TADDR, 0.33, TEST_ZADDR)
 
 #	print zd.sendNoteToAddress(encnote, TEST_ZSECRET, faucet_addr, 0.33, TEST_ZADDR)
 
 
-
+if __name__ == "__main__":
+	test_daemon()
