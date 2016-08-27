@@ -64,12 +64,6 @@ class ZDaemon(object):
 
 	
 	#Wallet Info (transparent)
-	def getNewAddress(self, account=""):
-		if account:
-			return self._call('getnewaddress', account)
-		else:
-			return self._call('getnewaddress')
-
 	def getTotalBalance(self, account=""):
 		if account:
 			return self._call('getbalance', account)
@@ -82,7 +76,7 @@ class ZDaemon(object):
 	def getUnspentTxs(self, minconf=1):
 		return self._call('listunspent', minconf)
 
-	#Txs
+	#Raw Txs
 	def getTxInfo(self, txid):
 		return self._call('gettransaction', txid)
 
@@ -115,6 +109,16 @@ class ZDaemon(object):
 			acc += tx['amount']
 
 		return acc, tx_array
+
+	#taddr methods
+	def getNewAddress(self, account=""):
+		if account:
+			return self._call('getnewaddress', account)
+		else:
+			return self._call('getnewaddress')
+
+	def sendTransparent(self, taddress):
+		return self._call('sendtoaddress', taddress)
 		
 	#zaddr methods
 	#generates keypair, but does not save to wallet.
