@@ -91,8 +91,8 @@ class ZDaemon(object):
 	def getAllAddresses(self):
 		return self._call('getaddressesbyaccount', "")
 	
-	def getUnspentTxs(self):
-		return self._call('listunspent')
+	def getUnspentTxs(self, minconf=1):
+		return self._call('listunspent', minconf)
 
 	#Txs
 	def getTxInfo(self, txid):
@@ -116,6 +116,17 @@ class ZDaemon(object):
 
 	def sendRawTx(self, hextx):
 		return self._call('sendrawtransaction', hextx)
+
+	def gatherUnspentArray(self, minconf=1):
+		unspent = self.getUnspentTxs()
+		#tx_array = [{tx['txid'],tx['vout']} for tx in unspent]
+		tx_array = []
+		acc = 0
+		for tx in unspent:
+			tx_array.append({'txid':tx['txid'],'vout':tx['vout']})
+			acc += tx['amount']
+
+		return acc, tx_array
 		
 	#zaddr methods
 	#generates keypair, but does not save to wallet.
@@ -143,9 +154,24 @@ class ZDaemon(object):
 	def pourRawTx(self, tx, zaddress, amount, fee=DEFAULT_FEE):
 		return self.rawJoinSplit( tx, zaddr_output={zaddress : amount-fee}, total_in=amount-fee)
 
+	#Pours all unspent transactions (from mining, etc.) into a single poured note.
+	def pourAllUnspentTxs(self, zaddress, fee=DEFAULT_FEE):
+		amount, tx_array = self.gatherUnspentArray()
+		tx = self.createNewRawTx(tx_array)
+		pourtx = self.pourRawTx(tx, zaddress, amount, fee)
+		hextx = self.signRawTx(pourtx.get('rawtxn'))
+
+		self.sendRawTx(hextx.get('hex'))
+
+		#encnote1 now contains all spendable outputs
+		return pourtx
+
+
 	def receiveTx(self, zsecret, claimnote):
 		return self._call('zcrawreceive', zsecret, claimnote)
 
+	#Given a poured (protected) note, and it's corresponding secret, send amount to zaddress_to and send
+	#remainder to the provided protected change address.
 	def sendNoteToZAddress(self, note, zsecret, zaddress_to, amount, zaddress_change, fee=DEFAULT_FEE):
 
 		note_info = self.receiveTx(zsecret, note)
@@ -171,6 +197,8 @@ class ZDaemon(object):
 		return join_result
 
 	
+	#Given a poured (protected) note, and it's corresponding secret, send amount to transparent address
+	#address_to  and send remainder to the provided protected change address.
 	def sendNoteToAddress(self, note, zsecret, address_to, amount, zaddress_change, fee=DEFAULT_FEE):
 		
 		note_info = self.receiveTx(zsecret, note)
@@ -199,8 +227,6 @@ class ZDaemon(object):
 
 		return join_result
 	
-
-
 def test_daemon():
 	zd = ZDaemon()
 
