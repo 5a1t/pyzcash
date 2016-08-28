@@ -1,9 +1,8 @@
 import os.path
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from zcash.ZDaemon import *
-from settings import *
+from pyzcash.rpc.ZDaemon import *
+from pyzcash.settings import *
 
 
 def test_daemon():

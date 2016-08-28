@@ -1,10 +1,9 @@
 import os.path
 import sys
 import time
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from zcash.ZDaemon import *
-from settings import *
+from pyzcash.rpc.ZDaemon import *
+from pyzcash.settings import *
 
 
 #Sweeps all unspent transparent txs, cleaning them through a temporary zaddr.

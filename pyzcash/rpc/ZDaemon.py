@@ -2,7 +2,7 @@ import requests
 import json
 
 
-from  settings import *
+from pyzcash.settings import *
 
 
 #https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list
@@ -218,4 +218,4 @@ class ZDaemon(object):
 		self.sendRawTx(hextx.get('hex'))
 
 		return join_result
-	
+
