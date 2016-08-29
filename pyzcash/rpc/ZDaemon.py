@@ -117,8 +117,8 @@ class ZDaemon(object):
 		else:
 			return self._call('getnewaddress')
 
-	def sendTransparent(self, taddress):
-		return self._call('sendtoaddress', taddress)
+	def sendTransparent(self, taddress, amount):
+		return self._call('sendtoaddress', taddress, amount)
 		
 	#zaddr methods
 	#generates keypair, but does not save to wallet.
